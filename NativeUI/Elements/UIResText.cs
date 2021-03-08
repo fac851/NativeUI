@@ -28,6 +28,7 @@ namespace NativeUI
 
 
         public Alignment TextAlignment { get; set; }
+        public bool DropShadow { get; set; } = false;                   ///001 added (backwards compatibility)
 
         /// <summary>
         /// Push a long string into the stack.

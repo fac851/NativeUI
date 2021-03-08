@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;                                               ///001 Stopwatch
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -44,6 +45,12 @@ namespace NativeUI
     public class UIMenu
     {
         #region Private Fields
+
+        Stopwatch sw = new Stopwatch();                                 ///001 Stopwatch for keyDelay in ProcessControl
+        private int keyDelayUD = 100;                                   ///001 Delay to slow down repeated up/down selections
+        private int keyDelayLR = 150;                                   ///001 Delay to slow down repeated left/right selections
+        private int lastKey = 0;                                        ///001 last key pressed
+
         private readonly UIContainer _mainMenu;
         private readonly Sprite _background;
 
@@ -55,7 +62,7 @@ namespace NativeUI
         private int _activeItem = 1000;
 
         private bool _visible;
-        private bool _useCursor = true;
+        private bool _useCursor = false;                                ///001 Mouse cursor disabled
         private bool _buttonsEnabled = true;
         private bool _justOpened = true;
         private bool _itemsDirty = false;
@@ -220,7 +227,7 @@ namespace NativeUI
             _mainMenu.Items.Add(Title = new UIResText(title, new Point(215 + Offset.X, 20 + Offset.Y), 1.15f, Color.White, Font.HouseScript, UIResText.Alignment.Centered));
             if (!String.IsNullOrWhiteSpace(subtitle))
             {
-                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + offset.X, 107 + Offset.Y), new Size(431, 37), Color.Black));
+                _mainMenu.Items.Add(new UIResRectangle(new Point(0 + Offset.X, 107 + Offset.Y), new Size(431, 37 + WidthOffset), Color.Black));     ///001 Subtitle WidthOffset quick fix -added: + WidthOffset -changed: offset.X > Offset.X
                 _mainMenu.Items.Add(Subtitle = new UIResText(subtitle, new Point(8 + Offset.X, 110 + Offset.Y), 0.35f, Color.WhiteSmoke, 0, UIResText.Alignment.Left));
 
                 if (subtitle.StartsWith("~"))
@@ -1161,6 +1168,7 @@ namespace NativeUI
                 _extraRectangleDown.Color = Color.FromArgb(200, 0, 0, 0);
         }
 
+
         /// <summary>
         /// Process control-stroke. Call this in the OnTick event.
         /// </summary>
@@ -1176,39 +1184,74 @@ namespace NativeUI
             if (HasControlJustBeenReleaseed(MenuControls.Back, key))
             {
                 GoBack();
+                lastKey = 0;                                            ///001
+                sw.Stop();                                              ///001
             }
             if (MenuItems.Count == 0) return;
             if (IsControlBeingPressed(MenuControls.Up, key))
             {
+                if (lastKey == 1)                                       ///001 repeated keypress: slow down input
+                {
+                    if (sw.ElapsedMilliseconds < keyDelayUD) return;    ///001 Stopwatch: skip input
+                }
+
                 if (Size > MaxItemsOnScreen + 1)
                     GoUpOverflow();
                 else
                     GoUp();
                 UpdateScaleform();
+
+                lastKey = 1;                                            ///001 remember last key pressed 
+                sw.Restart();                                           ///001 Stopwatch restart
             }
 
             else if (IsControlBeingPressed(MenuControls.Down, key))
             {
+                if (lastKey == 2)                                       ///001 repeated keypress: slow down input
+                {
+                    if (sw.ElapsedMilliseconds < keyDelayUD) return;    ///001 Stopwatch: skip input
+                }
+
                 if (Size > MaxItemsOnScreen + 1)
                     GoDownOverflow();
                 else
                     GoDown();
                 UpdateScaleform();
+
+                lastKey = 2;                                            ///001 remember last key pressed 
+                sw.Restart();                                           ///001 Stopwatch restart
             }
 
             else if (IsControlBeingPressed(MenuControls.Left, key))
             {
+                if (lastKey == 3)                                       ///001 repeated keypress: slow down input
+                {
+                    if (sw.ElapsedMilliseconds < keyDelayLR) return;    ///001 Stopwatch: skip input
+                }
+
                 GoLeft();
+
+                lastKey = 3;                                            ///001 remember last key pressed 
+                sw.Restart();                                           ///001 Stopwatch restart
             }
 
             else if (IsControlBeingPressed(MenuControls.Right, key))
             {
+                if (lastKey == 4)                                       ///001 repeated keypress: slow down input
+                {
+                    if (sw.ElapsedMilliseconds < keyDelayLR) return;    ///001 Stopwatch: skip input
+                }
+
                 GoRight();
+                lastKey = 4;                                            ///001 remember last key pressed 
+                sw.Restart();                                           ///001 Stopwatch restart
             }
 
             else if (HasControlJustBeenPressed(MenuControls.Select, key))
             {
                 SelectItem();
+                lastKey = 0;                                            ///001
+                sw.Stop();                                              ///001
             }
 
         }
