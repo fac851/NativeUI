@@ -1,3 +1,21 @@
+# NativeUI-fac851-2021
+NativeUI-fac851-2021v1 adds these fixes:
+- Added keypress delay to fix menu selection problems on faster systems (for keyboard and controllers)
+- Fixed DropShadow for backwards compatibility
+- Subtitle WidthOffset fix
+
+This version of NativeUI is based on Guad/NativeUI (from 14 Jan 2020) which added support for disabling the mouse cursor usage in NativeUI menus completely (by justalemon - Hannele Ruiz, thanks!). The download below includes two versions, so you can choose a NativeUI with mouse enabled or disabled.
+
+Download [**NativeUI-fac851-2021**](http://lucid-q.net/nui/)
+
+Note for widescreen users with GTA V: to display menus and the user interface without cropping you can install [**Flawless Widescreen**](http://www.flawlesswidescreen.org/) with [**this script**](https://community.pcgamingwiki.com/files/file/1876-grand-theft-auto-v-fov-ultrawide-new-fws-script/).
+Select 'Pillarboxing Removal' in Flawless Widescreen. (The mouse cursor is not in the correct position for NativeUI menus in widescreen.)
+
+## Installation
+Copy 'NativeUI.dll' into the 'scripts' folder of Grand Theft Auto V
+
+# __________________________________
+
 # NativeUI
 ![NativeUI Example](http://i.imgur.com/nqD2Ty1.png)
 
